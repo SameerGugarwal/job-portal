@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build folders
+dist/
+build/
+
+# Mac files
+.DS_Store
+
+# VS Code
+.vscode/
+
+# React build
+client-react/node_modules/
+
+# Server node modules
+server/node_modules/
