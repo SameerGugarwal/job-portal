@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SynBioRem AI Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #03080f;
+    --panel: #060e1a;
+    --border: #0d3050;
+    --accent1: #00c8ff;
+    --accent2: #00ff9d;
+    --accent3: #ff5e7e;
+    --accent4: #f5c400;
+    --text: #cce8ff;
+    --muted: #5a8aaa;
+    --glow1: rgba(0,200,255,0.18);
+    --glow2: rgba(0,255,157,0.13);
+  }
+
+  @page { size: 960px 672px landscape; margin: 0; }
+
+  body {
+    width: 960px;
+    height: 672px;
+    background: var(--bg);
+    font-family: 'Exo 2', sans-serif;
+    color: var(--text);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* DNA helix accent top-right */
+  .dna-bg {
+    position: absolute;
+    top: -20px; right: -10px;
+    width: 180px; height: 200px;
+    opacity: 0.07;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Glowing orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orb1 { width: 300px; height: 300px; background: rgba(0,200,255,0.12); top: -80px; left: -80px; }
+  .orb2 { width: 200px; height: 200px; background: rgba(0,255,157,0.09); bottom: -60px; right: 100px; }
+  .orb3 { width: 150px; height: 150px; background: rgba(255,94,126,0.08); top: 50%; left: 40%; }
+
+  .poster {
+    position: relative;
+    width: 960px;
+    height: 672px;
+    display: grid;
+    grid-template-rows: 90px 1fr 38px;
+    grid-template-columns: 1fr;
+    z-index: 1;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    grid-row: 1;
+    background: linear-gradient(135deg, #020d1a 0%, #041828 60%, #05243a 100%);
+    border-bottom: 1.5px solid var(--accent1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px 0 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 30px rgba(0,200,255,0.15);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent1), var(--accent3));
+  }
+
+  .header-left { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 3px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .main-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18.5px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 1px;
+    line-height: 1.15;
+    text-shadow: 0 0 20px rgba(0,200,255,0.6);
+  }
+  .main-title span { color: var(--accent1); }
+
+  .subtitle {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    font-weight: 300;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .team-box {
+    background: rgba(0,200,255,0.08);
+    border: 1px solid rgba(0,200,255,0.3);
+    border-radius: 4px;
+    padding: 5px 12px;
+    text-align: right;
+  }
+  .team-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 7px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .team-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    color: var(--accent2);
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .tag-row { display: flex; gap: 5px; }
+  .tag {
+    font-size: 7px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .tag-green { background: rgba(0,255,157,0.1); color: var(--accent2); border: 1px solid rgba(0,255,157,0.3); }
+  .tag-blue  { background: rgba(0,200,255,0.1); color: var(--accent1); border: 1px solid rgba(0,200,255,0.3); }
+  .tag-red   { background: rgba(255,94,126,0.1); color: var(--accent3); border: 1px solid rgba(255,94,126,0.3); }
+
+  /* ── BODY ── */
+  .body {
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: 195px 1fr 195px;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    padding: 7px 8px 5px;
+  }
+
+  /* ── PANEL BASE ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    border-radius: 6px 6px 0 0;
+  }
+  .panel.c1::before { background: var(--accent3); }
+  .panel.c2::before { background: var(--accent1); }
+  .panel.c3::before { background: var(--accent2); }
+  .panel.c4::before { background: var(--accent4); }
+  .panel.c5::before { background: var(--accent3); }
+  .panel.c6::before { background: var(--accent1); }
+
+  .panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .panel-title .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .c1 .panel-title .dot { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .c2 .panel-title .dot { background: var(--accent1); box-shadow: 0 0 6px var(--accent1); }
+  .c3 .panel-title .dot { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+  .c4 .panel-title .dot { background: var(--accent4); box-shadow: 0 0 6px var(--accent4); }
+  .c5 .panel-title .dot { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .c6 .panel-title .dot { background: var(--accent1); box-shadow: 0 0 6px var(--accent1); }
+
+  p, li { font-size: 8px; line-height: 1.55; color: #a0c8e0; }
+  ul { padding-left: 10px; }
+  li { margin-bottom: 2px; }
+  li::marker { color: var(--accent1); }
+
+  strong { color: #d0eeff; font-weight: 600; }
+  em { color: var(--accent2); font-style: normal; font-weight: 600; }
+
+  /* ── LEFT COLUMN ── */
+  .col-left { grid-column: 1; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 6px; }
+
+  /* Key Concepts */
+  .concepts-grid { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+  .concept-item {
+    background: rgba(0,200,255,0.04);
+    border: 1px solid rgba(0,200,255,0.12);
+    border-radius: 4px;
+    padding: 4px 7px;
+    font-size: 7.5px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .concept-icon { font-size: 10px; }
+
+  /* Software */
+  .sw-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .sw-chip {
+    background: rgba(0,255,157,0.07);
+    border: 1px solid rgba(0,255,157,0.2);
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 7px;
+    color: var(--accent2);
+  }
+
+  /* References */
+  .ref-list { margin-top: 3px; }
+  .ref-item {
+    font-size: 6.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding-left: 8px;
+    position: relative;
+    margin-bottom: 2px;
+  }
+  .ref-item::before {
+    content: '[' attr(data-n) ']';
+    position: absolute;
+    left: 0;
+    color: var(--accent1);
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ── MIDDLE COLUMN ── */
+  .col-mid { grid-column: 2; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 6px; }
+
+  /* Problem + Solution (top row) */
+  .mid-top { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+  /* Flowchart panel */
+  .flow-panel {
+    flex: 1;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .flow-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    border-radius: 6px 6px 0 0;
+  }
+
+  /* Flow steps */
+  .flow-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    margin-top: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .flow-box {
+    width: 100%;
+    background: rgba(0,200,255,0.06);
+    border: 1px solid rgba(0,200,255,0.2);
+    border-radius: 4px;
+    padding: 4px 2px;
+    text-align: center;
+    font-size: 6.5px;
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+    position: relative;
+  }
+  .flow-box.highlight {
+    background: rgba(0,255,157,0.08);
+    border-color: rgba(0,255,157,0.3);
+    color: var(--accent2);
+  }
+  .flow-box .flow-icon { font-size: 11px; display: block; margin-bottom: 1px; }
+
+  .flow-arrow {
+    font-size: 9px;
+    color: var(--accent1);
+    opacity: 0.7;
+    flex-shrink: 0;
+    margin-top: -10px;
+  }
+
+  /* Microbe table */
+  .microbe-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+  .microbe-table th {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 6.5px;
+    color: var(--accent1);
+    text-align: left;
+    padding: 2px 4px;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .microbe-table td {
+    font-size: 6.5px;
+    color: #8bb8d4;
+    padding: 2px 4px;
+    border-bottom: 1px solid rgba(13,48,80,0.5);
+    line-height: 1.4;
+  }
+  .microbe-table tr:hover td { background: rgba(0,200,255,0.04); }
+  .score {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 6px;
+    font-weight: 700;
+  }
+  .score-high { background: rgba(0,255,157,0.15); color: var(--accent2); }
+  .score-med  { background: rgba(245,196,0,0.15); color: var(--accent4); }
+
+  /* ── RIGHT COLUMN ── */
+  .col-right { grid-column: 3; grid-row: 1 / 3; display: flex; flex-direction: column; gap: 6px; }
+
+  /* Working steps */
+  .steps { display: flex; flex-direction: column; gap: 4px; margin-top: 2px; }
+  .step {
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgba(0,200,255,0.1);
+    border: 1px solid rgba(0,200,255,0.3);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    color: var(--accent1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .step-text { font-size: 7.5px; color: #a0c8e0; line-height: 1.45; padding-top: 1px; }
+  .step-text strong { color: var(--accent1); }
+
+  /* Pollutants */
+  .poll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; }
+  .poll-card {
+    background: rgba(255,94,126,0.05);
+    border: 1px solid rgba(255,94,126,0.15);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 7px;
+    color: #c0a0b0;
+    text-align: center;
+  }
+  .poll-icon { font-size: 12px; display: block; margin-bottom: 1px; }
+  .poll-name { color: var(--accent3); font-weight: 600; display: block; }
+
+  /* Impact metrics */
+  .metrics { display: flex; gap: 5px; margin-top: 4px; }
+  .metric {
+    flex: 1;
+    background: rgba(0,255,157,0.05);
+    border: 1px solid rgba(0,255,157,0.15);
+    border-radius: 4px;
+    padding: 5px 4px;
+    text-align: center;
+  }
+  .metric-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 900;
+    color: var(--accent2);
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0,255,157,0.4);
+  }
+  .metric-lbl { font-size: 6px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    grid-row: 3;
+    background: #020a12;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+  .footer-left { font-family: 'Share Tech Mono', monospace; font-size: 7px; color: var(--muted); letter-spacing: 1px; }
+  .footer-center { display: flex; gap: 12px; }
+  .footer-pill {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 6.5px;
+    color: var(--accent1);
+    opacity: 0.6;
+    letter-spacing: 1px;
+  }
+  .footer-right { font-family: 'Share Tech Mono', monospace; font-size: 7px; color: var(--muted); letter-spacing: 1px; }
+
+  /* Decorative corner lines */
+  .corner {
+    position: absolute;
+    width: 16px; height: 16px;
+    pointer-events: none;
+  }
+  .corner-tl { top: 8px; left: 8px; border-top: 1.5px solid var(--accent1); border-left: 1.5px solid var(--accent1); opacity: 0.5; }
+  .corner-tr { top: 8px; right: 8px; border-top: 1.5px solid var(--accent1); border-right: 1.5px solid var(--accent1); opacity: 0.5; }
+  .corner-bl { bottom: 8px; left: 8px; border-bottom: 1.5px solid var(--accent1); border-left: 1.5px solid var(--accent1); opacity: 0.5; }
+  .corner-br { bottom: 8px; right: 8px; border-bottom: 1.5px solid var(--accent1); border-right: 1.5px solid var(--accent1); opacity: 0.5; }
+
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<div class="poster">
+
+  <!-- ══ HEADER ══ -->
+  <div class="header">
+    <div class="header-left">
+      <span class="badge">◈ Synthetic Biology · Bioremediation · Artificial Intelligence</span>
+      <div class="main-title"><span>SynBioRem</span> AI</div>
+      <div class="main-title" style="font-size:10px; font-weight:400; color:#7ab8d8; letter-spacing:0.5px; margin-top:1px;">
+        AI-Assisted Synthetic Microbe Design Platform for Environmental Pollution Remediation
+      </div>
+      <div class="subtitle">Precision-engineered microbial solutions · Intelligent bioremediation · Real-world deployment</div>
+    </div>
+    <div class="header-right">
+      <div class="team-box">
+        <div class="team-label">Presented by</div>
+        <div class="team-name">[ ATLAS ]</div>
+      </div>
+      <div class="tag-row">
+        <span class="tag tag-green">🧬 SynBio</span>
+        <span class="tag tag-blue">🤖 AI/ML</span>
+        <span class="tag tag-red">🌿 Environ</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BODY ══ -->
+  <div class="body">
+
+    <!-- ─── LEFT COLUMN ─── -->
+    <div class="col-left">
+
+      <!-- Key Concepts -->
+      <div class="panel c1" style="flex:1.2;">
+        <div class="panel-title"><span class="dot"></span>Key Concepts</div>
+        <div class="concepts-grid">
+          <div class="concept-item"><span class="concept-icon">🧬</span><div><strong>Synthetic Biology</strong><br><span style="font-size:6.5px;color:var(--muted);">Engineered gene circuits in chassis organisms</span></div></div>
+          <div class="concept-item"><span class="concept-icon">🤖</span><div><strong>AI Recommendation Engine</strong><br><span style="font-size:6.5px;color:var(--muted);">Knowledge-base scoring & blueprint generation</span></div></div>
+          <div class="concept-item"><span class="concept-icon">🌱</span><div><strong>Bioremediation</strong><br><span style="font-size:6.5px;color:var(--muted);">Biological degradation of environmental toxins</span></div></div>
+          <div class="concept-item"><span class="concept-icon">⚗️</span><div><strong>Metabolic Engineering</strong><br><span style="font-size:6.5px;color:var(--muted);">Pathway optimization for pollutant catabolism</span></div></div>
+          <div class="concept-item"><span class="concept-icon">📊</span><div><strong>Feasibility Scoring</strong><br><span style="font-size:6.5px;color:var(--muted);">Safety, scalability & containment assessment</span></div></div>
+        </div>
+      </div>
+
+      <!-- Software Used -->
+      <div class="panel c3" style="flex:0.7;">
+        <div class="panel-title"><span class="dot"></span>Software Stack</div>
+        <div class="sw-chips">
+          <span class="sw-chip">Python 3.11</span>
+          <span class="sw-chip">Pandas</span>
+          <span class="sw-chip">Streamlit</span>
+          <span class="sw-chip">FastAPI</span>
+          <span class="sw-chip">Matplotlib</span>
+          <span class="sw-chip">Plotly</span>
+          <span class="sw-chip">NumPy</span>
+          <span class="sw-chip">JSON KB</span>
+        </div>
+        <div class="section-divider" style="margin-top:6px;"></div>
+        <div class="ref-list">
+          <div class="ref-item" data-n="1">Endy D. (2005). Foundations for engineering biology. <em style="color:#5a8aaa;">Nature</em>, 438.</div>
+          <div class="ref-item" data-n="2">Cases I. & de Lorenzo V. (2005). Genetically modified organisms for the environment. <em style="color:#5a8aaa;">IJSEM.</em></div>
+          <div class="ref-item" data-n="3">Pieper D. & Reineke W. (2000). Engineering bacteria for bioremediation. <em style="color:#5a8aaa;">Curr. Opin. Biotechnol.</em></div>
+          <div class="ref-item" data-n="4">Varjani S.J. (2017). Microbial degradation of petroleum hydrocarbons. <em style="color:#5a8aaa;">Bioresour. Technol.</em></div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- ─── MIDDLE COLUMN ─── -->
+    <div class="col-mid">
+
+      <!-- Problem + Solution row -->
+      <div class="mid-top">
+
+        <!-- Problem Definition -->
+        <div class="panel c2">
+          <div class="panel-title"><span class="dot"></span>Problem Definition</div>
+          <ul>
+            <li>Over <strong>2 billion hectares</strong> of land contaminated by industrial pollutants globally</li>
+            <li>Heavy metals (Pb, Cd, Hg) cause irreversible neurological & renal damage</li>
+            <li>Textile effluents release <strong>carcinogenic azo-dyes</strong> into freshwater systems</li>
+            <li>Petroleum spills devastate marine & terrestrial biodiversity</li>
+            <li>Conventional remediation: <em>costly</em>, slow, and chemically invasive</li>
+            <li><strong>No unified platform</strong> to intelligently recommend bioremediators</li>
+          </ul>
+          <div class="metrics" style="margin-top:6px;">
+            <div class="metric"><div class="metric-val">40%</div><div class="metric-lbl">Arable land at risk</div></div>
+            <div class="metric"><div class="metric-val">$B</div><div class="metric-lbl">Annual cleanup cost</div></div>
+            <div class="metric"><div class="metric-val">5×</div><div class="metric-lbl">Bio vs chem cost ratio</div></div>
+          </div>
+        </div>
+
+        <!-- Proposed Solution -->
+        <div class="panel c3">
+          <div class="panel-title"><span class="dot"></span>Proposed Solution</div>
+          <p style="margin-bottom:4px;"><em>SynBioRem AI</em> is an intelligent decision-support platform that <strong>recommends, blueprints, and scores</strong> synthetic microbe designs for site-specific pollutant remediation.</p>
+          <ul>
+            <li><strong>Input:</strong> Pollutant type, concentration, site conditions</li>
+            <li><strong>AI Engine:</strong> Matches pollutant profile → optimal organism + metabolic pathway</li>
+            <li><strong>Blueprint:</strong> Genetic circuit design with promoter & gene recommendations</li>
+            <li><strong>Scoring:</strong> Safety index, ecological risk, scalability & containment rating</li>
+            <li><strong>Output:</strong> Deployment strategy + regulatory checklist</li>
+          </ul>
+          <div style="margin-top:5px; padding:4px 7px; background:rgba(0,255,157,0.06); border-left:2px solid var(--accent2); border-radius:0 3px 3px 0;">
+            <p style="color:var(--accent2); font-size:7px;">💡 <strong>Innovation:</strong> First platform to integrate synthetic biology design + AI scoring + real-world deployment logistics in a unified dashboard.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Flowchart -->
+      <div class="flow-panel">
+        <div class="panel-title" style="font-family:'Orbitron',sans-serif; font-size:7px; font-weight:700; letter-spacing:2px; display:flex; align-items:center; gap:5px;">
+          <span style="width:5px;height:5px;border-radius:50%;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:inline-block;box-shadow:0 0 6px var(--accent1);"></span>
+          System Architecture &amp; Workflow
+        </div>
+        <div class="flow-container">
+          <div class="flow-step">
+            <div class="flow-box">
+              <span class="flow-icon">👤</span>
+              User<br>Input
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">
+              <span class="flow-icon">🔬</span>
+              Pollutant<br>Profiling
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">
+              <span class="flow-icon">🗄️</span>
+              Knowledge<br>Base
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <span class="flow-icon">🤖</span>
+              AI Recom-<br>mendation
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">
+              <span class="flow-icon">🧬</span>
+              Synthetic<br>Blueprint
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">
+              <span class="flow-icon">⚖️</span>
+              Safety<br>Scoring
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box highlight">
+              <span class="flow-icon">📊</span>
+              Output<br>Dashboard
+            </div>
+          </div>
+        </div>
+
+        <!-- Microbe Table -->
+        <div style="margin-top:7px;">
+          <div style="font-family:'Share Tech Mono',monospace; font-size:6.5px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:3px;">Microorganism — Pollutant Mapping</div>
+          <table class="microbe-table">
+            <thead>
+              <tr>
+                <th>Organism</th>
+                <th>Target Pollutant</th>
+                <th>Mechanism</th>
+                <th>Safety</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><em style="color:#7acce0;">Pseudomonas putida</em></td>
+                <td>Oil / Hydrocarbons</td>
+                <td>Alkane hydroxylase, TOD pathway</td>
+                <td>BSL-1</td>
+                <td><span class="score score-high">9.2 / 10</span></td>
+              </tr>
+              <tr>
+                <td><em style="color:#7acce0;">Bacillus subtilis</em></td>
+                <td>Heavy metals (Pb)</td>
+                <td>Metal efflux pumps, biosorption</td>
+                <td>BSL-1</td>
+                <td><span class="score score-high">8.8 / 10</span></td>
+              </tr>
+              <tr>
+                <td><em style="color:#7acce0;">E. coli K-12</em></td>
+                <td>Pesticides</td>
+                <td>Laccase, OPH enzyme expression</td>
+                <td>BSL-1</td>
+                <td><span class="score score-med">7.4 / 10</span></td>
+              </tr>
+              <tr>
+                <td><em style="color:#7acce0;">Microalgae sp.</em></td>
+                <td>Textile dyes (Azo)</td>
+                <td>Azoreductase, laccase secretion</td>
+                <td>BSL-1</td>
+                <td><span class="score score-high">8.5 / 10</span></td>
+              </tr>
+              <tr>
+                <td><em style="color:#7acce0;">Microbial Consortium</em></td>
+                <td>Mixed / Complex</td>
+                <td>Synergistic multi-pathway degradation</td>
+                <td>BSL-1</td>
+                <td><span class="score score-high">9.5 / 10</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /col-mid -->
+
+    <!-- ─── RIGHT COLUMN ─── -->
+    <div class="col-right">
+
+      <!-- Working Explanation -->
+      <div class="panel c4" style="flex:1.3;">
+        <div class="panel-title"><span class="dot"></span>How It Works</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text"><strong>Pollutant Intake:</strong> User submits pollutant type, concentration & site metadata via Streamlit UI or REST API</div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text"><strong>Knowledge Retrieval:</strong> Structured KB queries return candidate organisms, gene circuits & known metabolic pathways</div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text"><strong>AI Matching:</strong> Weighted scoring model ranks organism–pollutant pairs on efficacy, safety & ecological compatibility</div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-text"><strong>Blueprint Generation:</strong> Auto-generates synthetic gene circuit design with promoters, reporters & kill-switches</div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-text"><strong>Deployment Plan:</strong> Recommends containment strategy, field inoculation method & regulatory biosafety checklist</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pollutants + Impact -->
+      <div class="panel c5" style="flex:0.85;">
+        <div class="panel-title"><span class="dot"></span>Pollutants Covered</div>
+        <div class="poll-grid">
+          <div class="poll-card">
+            <span class="poll-icon">⚡</span>
+            <span class="poll-name">Heavy Metals</span>
+            Lead, Cadmium, Mercury
+          </div>
+          <div class="poll-card">
+            <span class="poll-icon">🎨</span>
+            <span class="poll-name">Textile Dyes</span>
+            Azo, Reactive, Vat dyes
+          </div>
+          <div class="poll-card">
+            <span class="poll-icon">🛢️</span>
+            <span class="poll-name">Hydrocarbons</span>
+            Crude oil, PAHs, BTEX
+          </div>
+          <div class="poll-card">
+            <span class="poll-icon">🌾</span>
+            <span class="poll-name">Pesticides</span>
+            Organophosphates, DDT
+          </div>
+        </div>
+        <div style="margin-top:5px; display:flex; gap:4px;">
+          <div style="flex:1; background:rgba(0,200,255,0.05); border:1px solid rgba(0,200,255,0.15); border-radius:3px; padding:4px; text-align:center;">
+            <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900; color:var(--accent1);">5+</div>
+            <div style="font-size:6px; color:var(--muted);">Chassis organisms</div>
+          </div>
+          <div style="flex:1; background:rgba(0,255,157,0.05); border:1px solid rgba(0,255,157,0.15); border-radius:3px; padding:4px; text-align:center;">
+            <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900; color:var(--accent2);">4</div>
+            <div style="font-size:6px; color:var(--muted);">Pollutant classes</div>
+          </div>
+          <div style="flex:1; background:rgba(245,196,0,0.05); border:1px solid rgba(245,196,0,0.15); border-radius:3px; padding:4px; text-align:center;">
+            <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:900; color:var(--accent4);">BSL-1</div>
+            <div style="font-size:6px; color:var(--muted);">Safety standard</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /body -->
+
+  <!-- ══ FOOTER ══ -->
+  <div class="footer">
+    <div class="footer-left">SYNBIOREM AI · HACKATHON 2025</div>
+    <div class="footer-center">
+      <span class="footer-pill">◈ AI-POWERED</span>
+      <span class="footer-pill">◈ OPEN SOURCE CONCEPT</span>
+      <span class="footer-pill">◈ BIOSAFETY COMPLIANT</span>
+      <span class="footer-pill">◈ SCALABLE ARCHITECTURE</span>
+    </div>
+    <div class="footer-right">SYNTHETIC BIOLOGY · ENVIRONMENTAL AI</div>
+  </div>
+
+</div><!-- /poster -->
+</body>
+</html>

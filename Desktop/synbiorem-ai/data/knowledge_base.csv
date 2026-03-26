@@ -1,0 +1,16 @@
+pollutant,category,microbe,mechanism,environment,pH_min,pH_max,temp_min,temp_max,safety_risk,efficiency_score,cost_score,scalability_score,deployment,notes
+Lead,Heavy Metal,Pseudomonas putida,Metal sequestration,Water,5,8,20,35,Medium,8,6,7,Bioreactor,Effective binding of heavy metals
+Lead,Heavy Metal,Bacillus subtilis,Biosorption,Water,6,8,20,40,Low,7,7,8,Bioreactor,Safe and scalable option
+Lead,Heavy Metal,Microbial consortium,Metal binding,Soil,5,9,15,35,Medium,9,5,9,Open soil,Best for large-scale soil cleanup
+
+Textile Dye,Organic Pollutant,Bacillus subtilis,Enzymatic degradation,Wastewater,6,9,25,40,Low,8,7,8,Treatment plant,Enzyme-based dye breakdown
+Textile Dye,Organic Pollutant,Pseudomonas putida,Oxidative degradation,Wastewater,6,8,20,35,Medium,9,6,7,Treatment plant,High efficiency degradation
+Textile Dye,Organic Pollutant,Microalgae,Adsorption + breakdown,Water,6,9,20,30,Low,7,8,8,Open water,Environment-friendly approach
+
+Oil,Hydrocarbon,Pseudomonas putida,Hydrocarbon degradation,Soil,6,8,20,35,Medium,9,6,9,Open soil,Best-known oil degrading microbe
+Oil,Hydrocarbon,Microbial consortium,Hydrocarbon breakdown,Soil,5,9,15,40,Medium,10,5,10,Open soil,Highly scalable for oil spills
+Oil,Hydrocarbon,Bacillus subtilis,Surfactant-assisted degradation,Soil,6,9,20,40,Low,7,7,8,Bioreactor,Helps emulsify oil
+
+Pesticide,Organic Pollutant,Pseudomonas putida,Biodegradation,Soil,6,8,20,35,Medium,8,6,8,Open soil,Effective pesticide breakdown
+Pesticide,Organic Pollutant,Bacillus subtilis,Enzyme detoxification,Soil,6,9,20,40,Low,7,7,8,Soil treatment,Stable and safe option
+Pesticide,Organic Pollutant,Microalgae,Absorption + degradation,Water,6,9,20,30,Low,6,8,7,Water body,Suitable for runoff areas

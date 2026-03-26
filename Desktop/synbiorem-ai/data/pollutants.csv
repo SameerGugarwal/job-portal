@@ -1,0 +1,6 @@
+pollutant,category,description,remediation_type,toxicity_level,common_sources
+Lead,Heavy Metal,Toxic heavy metal contaminating water and soil,Sequestration,High,Industrial waste, mining
+Textile Dye,Organic Pollutant,Azo dyes in wastewater from textile industries,Degradation,Medium,Textile factories
+Oil,Hydrocarbon,Crude oil and petroleum contamination in soil/water,Degradation,High,Oil spills, refineries
+Pesticide,Organic Pollutant,Chemical pesticides in agricultural runoff,Detoxification,Medium,Agriculture, farming runoff
+

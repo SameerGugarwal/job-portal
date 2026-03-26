@@ -1,0 +1,6 @@
+microbe,type,description,preferred_environment,pH_min,pH_max,temp_min,temp_max,safety_risk,known_for
+Pseudomonas putida,Bacteria,Robust soil bacterium used in biodegradation,Soil/Water,6,8,20,35,Medium,Hydrocarbon degradation
+Bacillus subtilis,Bacteria,Industrial bacterium known for enzyme production,Soil/Water,6,9,20,40,Low,Enzymatic degradation
+E. coli (lab strain),Bacteria,Model organism used in synthetic biology,Bioreactor,6,8,20,37,Medium,Genetic engineering chassis
+Microalgae,Algae,Photosynthetic organism useful for absorption and remediation,Water,6,9,20,30,Low,Nutrient absorption
+Microbial consortium,Mixed culture,Combination of microbes working synergistically,Soil/Water,5,9,15,40,Medium,Complex pollutant breakdown
