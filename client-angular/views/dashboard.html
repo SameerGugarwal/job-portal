@@ -1,0 +1,155 @@
+<!-- ── Recruiter Dashboard View ──────────────────────────────── -->
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+  <div class="container d-flex justify-content-between align-items-center flex-wrap">
+    <div>
+      <h2><i class="bi bi-briefcase me-2"></i>Welcome, {{userName}}</h2>
+      <p class="mb-0">Manage your job postings and applicants</p>
+    </div>
+    <button class="btn btn-light mt-2 mt-md-0" ng-click="showPostForm = !showPostForm">
+      <i class="bi bi-plus-circle me-1"></i>Post New Job
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <p class="text-muted mb-1">Jobs Posted</p>
+        <h3>{{jobs.length}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Job Form (toggle) -->
+  <div class="card p-4 mb-4" ng-if="showPostForm">
+    <h5><i class="bi bi-plus-circle me-2"></i>Post a New Job</h5>
+    <div class="alert alert-danger" ng-if="postError">{{postError}}</div>
+    <form ng-submit="postJob()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Job Title *</label>
+          <input type="text" class="form-control" ng-model="newJob.title" placeholder="e.g. Frontend Developer Intern" required />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Job Type</label>
+          <select class="form-select" ng-model="newJob.jobType">
+            <option value="internship">Internship</option>
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Description *</label>
+          <textarea class="form-control" ng-model="newJob.description" rows="3" placeholder="Describe the role..." required></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Skills (comma-separated)</label>
+          <input type="text" class="form-control" ng-model="newJob.skillsRaw" placeholder="React, Node.js, MongoDB" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Location</label>
+          <input type="text" class="form-control" ng-model="newJob.location" placeholder="e.g. Bangalore" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Stipend / Salary</label>
+          <input type="text" class="form-control" ng-model="newJob.salaryOrStipend" placeholder="e.g. 15,000/month" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Category</label>
+          <input type="text" class="form-control" ng-model="newJob.category" placeholder="e.g. Engineering" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Deadline</label>
+          <input type="date" class="form-control" ng-model="newJob.deadline" />
+        </div>
+      </div>
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary" ng-disabled="posting">
+          <span ng-if="!posting"><i class="bi bi-send me-1"></i>Post Job</span>
+          <span ng-if="posting">Posting...</span>
+        </button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="showPostForm = false">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div class="spinner-wrapper" ng-if="loading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" ng-if="error">{{error}}</div>
+
+  <!-- Empty -->
+  <div class="empty-state" ng-if="!loading && jobs.length === 0 && !error">
+    <i class="bi bi-briefcase d-block"></i>
+    <p>You haven't posted any jobs yet. Click "Post New Job" to get started.</p>
+  </div>
+
+  <!-- My Jobs List -->
+  <h4 class="mb-3" ng-if="jobs.length > 0">Your Job Postings</h4>
+  <div class="card job-card p-3 mb-3" ng-repeat="job in jobs">
+    <div class="d-flex justify-content-between align-items-start flex-wrap">
+      <div>
+        <h5 class="mb-1">{{job.title}}</h5>
+        <p class="text-muted mb-1">{{job.location}} &middot; {{job.salaryOrStipend}}</p>
+      </div>
+      <span class="badge" ng-class="jobTypeClass(job.jobType)">{{job.jobType}}</span>
+    </div>
+    <p class="small text-muted mb-2" ng-if="job.deadline">Deadline: {{job.deadline | date:'mediumDate'}}</p>
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn btn-outline-primary btn-sm" ng-click="viewApplicants(job._id, job.title)">
+        <i class="bi bi-people me-1"></i>View Applicants
+      </button>
+      <button class="btn btn-outline-danger btn-sm" ng-click="deleteJob(job._id)">
+        <i class="bi bi-trash me-1"></i>Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Applicants Panel (inline, replaces modal) -->
+  <div class="card p-4 mt-4" ng-if="showApplicants">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Applicants for: {{applicantsTitle}}</h5>
+      <button class="btn btn-outline-secondary btn-sm" ng-click="closeApplicants()">
+        <i class="bi bi-x-lg"></i> Close
+      </button>
+    </div>
+
+    <div class="spinner-wrapper" ng-if="loadingApplicants">
+      <div class="spinner-border text-primary"></div>
+    </div>
+
+    <p class="text-muted text-center" ng-if="!loadingApplicants && applicants.length === 0">No applications yet.</p>
+
+    <div class="table-responsive" ng-if="!loadingApplicants && applicants.length > 0">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Email</th><th>Cover Letter</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="app in applicants">
+            <td>{{$index + 1}}</td>
+            <td>{{app.studentId.name || '—'}}</td>
+            <td>{{app.studentId.email || '—'}}</td>
+            <td>{{app.coverLetter || '—'}}</td>
+            <td><span class="badge" ng-class="statusClass(app.status)">{{app.status}}</span></td>
+            <td>
+              <select class="form-select form-select-sm" ng-model="app.status" ng-change="updateStatus(app)" style="width: 140px;">
+                <option value="Applied">Applied</option>
+                <option value="Shortlisted">Shortlisted</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Hired">Hired</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

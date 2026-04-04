@@ -1,0 +1,80 @@
+<!-- ── Student Applications View ─────────────────────────────── -->
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+  <div class="container">
+    <h2><i class="bi bi-mortarboard me-2"></i>Welcome, {{userName}}</h2>
+    <p class="mb-0">Track your job applications</p>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <p class="text-muted mb-1">Total Applied</p>
+        <h3>{{stats.total}}</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <p class="text-muted mb-1">Shortlisted</p>
+        <h3 class="text-success">{{stats.shortlisted}}</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <p class="text-muted mb-1">Hired</p>
+        <h3 style="color: #6f42c1;">{{stats.hired}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="spinner-wrapper" ng-if="loading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" ng-if="error">{{error}}</div>
+
+  <!-- Empty -->
+  <div class="empty-state" ng-if="!loading && applications.length === 0 && !error">
+    <i class="bi bi-inbox d-block"></i>
+    <p>You haven't applied to any jobs yet.</p>
+    <a href="#!/" class="btn btn-primary">Browse Jobs</a>
+  </div>
+
+  <!-- Applications Table -->
+  <div class="table-responsive" ng-if="!loading && applications.length > 0">
+    <table class="table table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Job Title</th>
+          <th>Company</th>
+          <th>Location</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Applied On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="app in applications">
+          <td>{{$index + 1}}</td>
+          <td>{{app.jobId.title || '—'}}</td>
+          <td>{{app.jobId.companyName || '—'}}</td>
+          <td>{{app.jobId.location || '—'}}</td>
+          <td>
+            <span class="badge" ng-class="{'bg-info': app.jobId.jobType === 'internship', 'bg-success': app.jobId.jobType === 'full-time', 'bg-warning': app.jobId.jobType === 'part-time'}">
+              {{app.jobId.jobType || '—'}}
+            </span>
+          </td>
+          <td><span class="badge" ng-class="statusClass(app.status)">{{app.status}}</span></td>
+          <td>{{app.appliedAt || app.createdAt | date:'mediumDate'}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

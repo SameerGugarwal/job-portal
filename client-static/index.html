@@ -1,15 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Job Portal</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>JobPortal — Find Your Dream Internship</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Custom CSS -->
+  <link href="css/style.css" rel="stylesheet" />
 </head>
 <body>
-  <h1>Job Portal / Internship Finder</h1>
-  <p>Phase 0 setup done ✅</p>
 
-  <script src="app.js"></script>
+  <!-- Navbar (rendered by common.js) -->
+  <div id="navbar-container"></div>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-center">
+    <div class="container">
+      <h1>Find Your Dream Internship</h1>
+      <p class="lead mt-3">Connecting students with top recruiters. Browse opportunities, apply in one click.</p>
+      <div class="mt-4">
+        <a href="jobs.html" class="btn btn-light btn-lg me-2">Browse Jobs</a>
+        <a href="register.html" class="btn btn-outline-light btn-lg">Get Started</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <main>
+    <section class="py-5">
+      <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row g-4 text-center">
+          <div class="col-md-4">
+            <div class="card job-card p-4 h-100">
+              <i class="bi bi-person-plus fs-1 text-primary mb-3"></i>
+              <h5>1. Create Account</h5>
+              <p class="text-muted">Register as a student or recruiter in seconds.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card job-card p-4 h-100">
+              <i class="bi bi-search fs-1 text-primary mb-3"></i>
+              <h5>2. Discover Jobs</h5>
+              <p class="text-muted">Search and filter internships by location, type, and skills.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card job-card p-4 h-100">
+              <i class="bi bi-send-check fs-1 text-primary mb-3"></i>
+              <h5>3. Apply Instantly</h5>
+              <p class="text-muted">Submit your application with a cover letter — no page reloads.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Jobs Preview -->
+    <section class="py-5 bg-white">
+      <div class="container">
+        <h2 class="text-center mb-4">Latest Opportunities</h2>
+        <div id="featured-jobs" class="row g-4">
+          <!-- Filled by jQuery -->
+        </div>
+        <div id="featured-spinner" class="spinner-wrapper">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="text-center mt-4">
+          <a href="jobs.html" class="btn btn-primary">View All Jobs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (rendered by common.js) -->
+  <div id="footer-container"></div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Common JS -->
+  <script src="js/common.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      // Recruiters should land directly on their dashboard, not the landing page
+      var user = getUser();
+      if (user && user.role === "recruiter") {
+        window.location.href = "recruiter-dashboard.html";
+        return;
+      }
+
+      // Fetch latest 3 jobs for the landing page
+      $.ajax({
+        url: API + "/jobs",
+        method: "GET",
+
+        success: function (data) {
+          $("#featured-spinner").hide();
+          var jobs = data.jobs.slice(0, 3);
+
+          if (jobs.length === 0) {
+            $("#featured-jobs").html(
+              '<div class="empty-state"><i class="bi bi-briefcase"></i><p>No jobs posted yet. Check back soon!</p></div>'
+            );
+            return;
+          }
+
+          var html = "";
+          $.each(jobs, function (i, job) {
+            html += '<div class="col-md-4">';
+            html += '  <div class="card job-card p-3 h-100">';
+            html += "    <h5>" + job.title + "</h5>";
+            html += '    <p class="text-muted mb-2">' + (job.companyName || "Company") + "</p>";
+            html += "    <p>" + jobTypeBadge(job.jobType) + ' <span class="ms-2"><i class="bi bi-geo-alt"></i> ' + job.location + "</span></p>";
+            html += '    <p class="text-muted small">' + job.description.substring(0, 100) + "...</p>";
+            html += '    <a href="job-details.html?id=' + job._id + '" class="btn btn-outline-primary btn-sm mt-auto">View Details</a>';
+            html += "  </div>";
+            html += "</div>";
+          });
+
+          $("#featured-jobs").hide().html(html).fadeIn(600);
+        },
+        error: function () {
+          $("#featured-spinner").hide();
+          $("#featured-jobs").html('<p class="text-center text-muted">Could not load jobs. Is the server running?</p>');
+        },
+      });
+    });
+  </script>
+
 </body>
 </html>

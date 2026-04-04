@@ -1,0 +1,88 @@
+<!-- ── Job Detail View ───────────────────────────────────────── -->
+<div class="container py-4" style="max-width: 800px;">
+  <a href="#!/" class="btn btn-outline-secondary btn-sm mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Back to Jobs
+  </a>
+
+  <!-- Loading -->
+  <div class="spinner-wrapper" ng-if="loading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" ng-if="error">{{error}} <a href="#!/">Browse jobs</a></div>
+
+  <!-- Job Details Card -->
+  <div class="card p-4" ng-if="job">
+    <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+      <div>
+        <h2>{{job.title}}</h2>
+        <p class="text-muted mb-0"><i class="bi bi-building me-1"></i>{{job.companyName || 'Company'}}</p>
+      </div>
+      <span class="badge" ng-class="jobTypeClass(job.jobType)">{{job.jobType}}</span>
+    </div>
+
+    <hr />
+
+    <div class="row mb-3">
+      <div class="col-sm-6 mb-2"><strong><i class="bi bi-geo-alt me-1"></i>Location:</strong> {{job.location}}</div>
+      <div class="col-sm-6 mb-2"><strong><i class="bi bi-cash me-1"></i>Stipend/Salary:</strong> {{job.salaryOrStipend}}</div>
+      <div class="col-sm-6 mb-2"><strong><i class="bi bi-tag me-1"></i>Category:</strong> {{job.category}}</div>
+      <div class="col-sm-6 mb-2" ng-if="job.deadline">
+        <strong><i class="bi bi-calendar me-1"></i>Deadline:</strong> {{job.deadline | date:'mediumDate'}}
+        <span class="badge bg-danger ms-1" ng-if="isExpired">Expired</span>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div ng-if="job.skillsRequired.length > 0">
+      <strong>Skills Required:</strong>
+      <div class="mt-1 mb-3">
+        <span class="badge bg-primary me-1 mb-1" ng-repeat="skill in job.skillsRequired">{{skill}}</span>
+      </div>
+    </div>
+
+    <strong>Description:</strong>
+    <p class="mt-1">{{job.description}}</p>
+
+    <p class="text-muted small" ng-if="job.recruiterId">Posted by: {{job.recruiterId.name || 'Recruiter'}}</p>
+  </div>
+
+  <!-- Apply Section (students only) -->
+  <div class="card p-4 mt-4" ng-if="job && currentUser && currentUser.role === 'student'">
+    <h4>Apply for this Job</h4>
+
+    <!-- Already applied -->
+    <div class="alert alert-success" ng-if="applied">
+      <i class="bi bi-check-circle me-2"></i>You have applied to this job.
+      <a href="#!/applications">View your applications</a>
+    </div>
+
+    <!-- Expired -->
+    <div class="alert alert-warning" ng-if="isExpired && !applied">
+      The application deadline has passed.
+    </div>
+
+    <!-- Apply error -->
+    <div class="alert alert-danger" ng-if="applyError">{{applyError}}</div>
+
+    <!-- Apply form -->
+    <form ng-submit="applyToJob()" ng-if="!applied && !isExpired">
+      <div class="mb-3">
+        <label class="form-label">Cover Letter (optional)</label>
+        <textarea class="form-control" ng-model="coverLetter" rows="4"
+                  placeholder="Tell the recruiter why you are a great fit..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-success" ng-disabled="applying">
+        <span ng-if="!applying"><i class="bi bi-send me-1"></i>Submit Application</span>
+        <span ng-if="applying"><i class="bi bi-hourglass-split me-1"></i>Submitting...</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Not logged in -->
+  <div class="card p-4 mt-4 text-center" ng-if="job && !currentUser">
+    <p class="mb-2">Want to apply?</p>
+    <a href="#!/login" class="btn btn-primary">Login to Apply</a>
+  </div>
+</div>

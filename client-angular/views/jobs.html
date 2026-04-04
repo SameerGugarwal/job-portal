@@ -1,0 +1,82 @@
+<!-- ── Jobs List View ────────────────────────────────────────── -->
+<div class="container py-4">
+  <h2 class="mb-4">Browse Jobs</h2>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <form class="row g-3 align-items-end" ng-submit="loadJobs()">
+      <div class="col-md-4">
+        <label class="form-label">Search</label>
+        <input type="text" class="form-control" ng-model="filters.search" placeholder="Job title or keyword..." />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-control" ng-model="filters.location" placeholder="e.g. Bangalore" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Job Type</label>
+        <select class="form-select" ng-model="filters.jobType">
+          <option value="">All Types</option>
+          <option value="internship">Internship</option>
+          <option value="full-time">Full-time</option>
+          <option value="part-time">Part-time</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-grow-1">
+          <i class="bi bi-search"></i> Search
+        </button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="clearFilters()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Jobs Count -->
+  <p class="text-muted mb-3" ng-if="!loading">
+    {{jobs.length}} job{{jobs.length !== 1 ? 's' : ''}} found
+  </p>
+
+  <!-- Loading -->
+  <div class="spinner-wrapper" ng-if="loading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- Error -->
+  <div class="alert alert-danger" ng-if="error">{{error}}</div>
+
+  <!-- Empty State -->
+  <div class="empty-state" ng-if="!loading && jobs.length === 0 && !error">
+    <i class="bi bi-search d-block"></i>
+    <p>No jobs match your filters. Try a different search.</p>
+  </div>
+
+  <!-- Job Cards Grid -->
+  <div class="row g-4" ng-if="!loading && jobs.length > 0">
+    <div class="col-md-6 col-lg-4" ng-repeat="job in jobs">
+      <div class="card job-card p-3 h-100 d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h5 class="mb-0">{{job.title}}</h5>
+          <span class="badge" ng-class="jobTypeClass(job.jobType)">{{job.jobType}}</span>
+        </div>
+        <p class="text-muted mb-1"><i class="bi bi-building me-1"></i>{{job.companyName || 'Company'}}</p>
+        <p class="mb-1"><i class="bi bi-geo-alt me-1"></i>{{job.location}}</p>
+        <p class="mb-1"><i class="bi bi-cash me-1"></i>{{job.salaryOrStipend}}</p>
+
+        <!-- Skills -->
+        <div class="mb-2" ng-if="job.skillsRequired.length > 0">
+          <span class="badge bg-light text-dark border me-1 mb-1" ng-repeat="skill in job.skillsRequired">{{skill}}</span>
+        </div>
+
+        <p class="text-muted small flex-grow-1">{{job.description | limitTo:120}}...</p>
+
+        <p class="small text-muted" ng-if="job.deadline">
+          <i class="bi bi-calendar me-1"></i>Deadline: {{job.deadline | date:'mediumDate'}}
+        </p>
+
+        <a href="#!/jobs/{{job._id}}" class="btn btn-outline-primary btn-sm mt-auto">View Details</a>
+      </div>
+    </div>
+  </div>
+</div>
