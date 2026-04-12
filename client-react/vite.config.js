@@ -11,6 +11,11 @@ export default defineConfig({
         target: 'http://localhost:5002',
         changeOrigin: true,
       },
+      // Forward /uploads requests so images/resumes served by Express are accessible
+      '/uploads': {
+        target: 'http://localhost:5002',
+        changeOrigin: true,
+      },
     },
   },
 })

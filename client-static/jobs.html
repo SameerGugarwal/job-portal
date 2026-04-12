@@ -12,53 +12,71 @@
 
   <div id="navbar-container"></div>
 
+  <!-- Page Header -->
+  <section class="dashboard-header">
+    <div class="container">
+      <h2><i class="bi bi-search me-2"></i>Browse Opportunities</h2>
+      <p>Discover thousands of jobs from top companies hiring right now.</p>
+    </div>
+  </section>
+
   <main class="py-4">
     <div class="container">
-      <h2 class="mb-4">Browse Jobs</h2>
+      <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <aside class="col-lg-3">
+          <div class="filter-sidebar reveal">
+            <h5><i class="bi bi-funnel-fill"></i> Filters</h5>
 
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <form id="filter-form" class="row g-3 align-items-end">
-          <div class="col-md-4">
-            <label for="filter-search" class="form-label">Search</label>
-            <input type="text" class="form-control" id="filter-search" placeholder="Job title or keyword..." />
-          </div>
-          <div class="col-md-3">
-            <label for="filter-location" class="form-label">Location</label>
-            <input type="text" class="form-control" id="filter-location" placeholder="e.g. Bangalore" />
-          </div>
-          <div class="col-md-3">
-            <label for="filter-type" class="form-label">Job Type</label>
-            <select class="form-select" id="filter-type">
-              <option value="">All Types</option>
-              <option value="internship">Internship</option>
-              <option value="full-time">Full-time</option>
-              <option value="part-time">Part-time</option>
-            </select>
-          </div>
-          <div class="col-md-2 d-flex gap-2">
-            <button type="submit" class="btn btn-primary flex-grow-1">
-              <i class="bi bi-search"></i> Search
-            </button>
-            <button type="button" class="btn btn-outline-secondary" id="clear-filters" title="Clear filters">
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
-        </form>
-      </div>
+            <form id="filter-form">
+              <div class="mb-3">
+                <label for="filter-search" class="form-label">Keyword</label>
+                <input type="text" class="form-control" id="filter-search" placeholder="Job title, skill..." />
+              </div>
 
-      <!-- Jobs Count -->
-      <p id="jobs-count" class="text-muted mb-3"></p>
+              <div class="mb-3">
+                <label for="filter-location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="filter-location" placeholder="e.g. Bangalore" />
+              </div>
 
-      <!-- Loading Spinner -->
-      <div id="jobs-spinner" class="spinner-wrapper">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+              <div class="mb-3">
+                <label for="filter-type" class="form-label">Job Type</label>
+                <select class="form-select" id="filter-type">
+                  <option value="">All Types</option>
+                  <option value="internship">Internship</option>
+                  <option value="full-time">Full-time</option>
+                  <option value="part-time">Part-time</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-100 mb-2">
+                <i class="bi bi-funnel"></i> Apply Filters
+              </button>
+              <button type="button" class="btn btn-outline-secondary w-100" id="clear-filters">
+                <i class="bi bi-x-lg"></i> Clear All
+              </button>
+            </form>
+          </div>
+        </aside>
+
+        <!-- Job List -->
+        <div class="col-lg-9">
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <p id="jobs-count" class="text-muted mb-0">Loading jobs...</p>
+            <small class="text-muted">
+              <i class="bi bi-info-circle"></i> Click any card to view details
+            </small>
+          </div>
+
+          <div id="jobs-spinner" class="spinner-wrapper">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div id="jobs-list"></div>
         </div>
       </div>
-
-      <!-- Jobs List -->
-      <div id="jobs-list"></div>
     </div>
   </main>
 

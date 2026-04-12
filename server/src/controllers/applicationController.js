@@ -1,5 +1,7 @@
 const Application = require("../models/Application");
 const Job = require("../models/Job");
+const User = require("../models/User");
+const sendEmail = require("../config/mailer");
 
 // ── STUDENT ROUTES ────────────────────────────────────────────
 
@@ -29,6 +31,21 @@ exports.applyToJob = async (req, res) => {
       studentId: req.session.userId,
       coverLetter: coverLetter || "",
     });
+
+    // Send confirmation email to the student (non-blocking)
+    const student = await User.findById(req.session.userId);
+    if (student) {
+      sendEmail(
+        student.email,
+        `Application Received — ${job.title}`,
+        `<h2>Hi ${student.name},</h2>
+         <p>Your application for <strong>${job.title}</strong> has been submitted successfully.</p>
+         <p><strong>Company:</strong> ${job.companyName || "N/A"}</p>
+         <p><strong>Status:</strong> Applied</p>
+         <p>We'll notify you when there's an update. Good luck!</p>
+         <br><p>— Job Portal Team</p>`
+      );
+    }
 
     return res.status(201).json({ message: "Application submitted", application });
   } catch (err) {
@@ -99,6 +116,23 @@ exports.updateStatus = async (req, res) => {
 
     application.status = status;
     await application.save();
+
+    // Notify the student about the status change (non-blocking)
+    const student = await User.findById(application.studentId);
+    if (student) {
+      const jobTitle = application.jobId.title || "a job";
+      sendEmail(
+        student.email,
+        `Application Update — ${jobTitle}`,
+        `<h2>Hi ${student.name},</h2>
+         <p>Your application for <strong>${jobTitle}</strong> has been updated.</p>
+         <p><strong>New Status:</strong> ${status}</p>
+         ${status === "Shortlisted" ? "<p>Congratulations! The recruiter is interested in your profile.</p>" : ""}
+         ${status === "Hired" ? "<p>🎉 Congratulations! You've been hired!</p>" : ""}
+         ${status === "Rejected" ? "<p>Unfortunately, the recruiter has decided to move forward with other candidates. Don't give up!</p>" : ""}
+         <br><p>— Job Portal Team</p>`
+      );
+    }
 
     return res.status(200).json({ message: "Status updated", application });
   } catch (err) {

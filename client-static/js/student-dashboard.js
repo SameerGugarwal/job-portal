@@ -12,9 +12,7 @@ $(document).ready(function () {
     return;
   }
 
-  // Set greeting
   $("#student-name").text(user.name);
-
   loadMyApplications();
 });
 
@@ -25,26 +23,25 @@ function loadMyApplications() {
   $.ajax({
     url: API + "/applications/me",
     method: "GET",
-
     success: function (data) {
       $("#apps-spinner").hide();
 
       var apps = data.applications;
 
-      // Update stats
+      // Animate stats
       var total = apps.length;
       var shortlisted = apps.filter(function (a) { return a.status === "Shortlisted"; }).length;
       var hired = apps.filter(function (a) { return a.status === "Hired"; }).length;
 
-      $("#stat-total").text(total);
-      $("#stat-shortlisted").text(shortlisted);
-      $("#stat-hired").text(hired);
+      animateCounter($("#stat-total"), total);
+      animateCounter($("#stat-shortlisted"), shortlisted);
+      animateCounter($("#stat-hired"), hired);
 
       if (apps.length === 0) {
         $("#apps-table-wrapper").html(
           '<div class="empty-state">' +
           '  <i class="bi bi-inbox"></i>' +
-          "  <p>You haven't applied to any jobs yet.</p>" +
+          "  <p>You haven't applied to any jobs yet. Start exploring!</p>" +
           '  <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>' +
           "</div>"
         ).fadeIn(400);
@@ -52,31 +49,31 @@ function loadMyApplications() {
       }
 
       var html = '<div class="table-responsive">';
-      html += '<table class="table table-hover align-middle">';
-      html += "<thead class=\"table-dark\">";
+      html += '<table class="table table-hover align-middle mb-0">';
+      html += "<thead>";
       html += "  <tr><th>#</th><th>Job Title</th><th>Company</th><th>Location</th><th>Type</th><th>Status</th><th>Applied On</th></tr>";
       html += "</thead><tbody>";
 
       $.each(apps, function (i, app) {
         var job = app.jobId || {};
         html += "<tr>";
-        html += "  <td>" + (i + 1) + "</td>";
-        html += "  <td>" + (job.title || "—") + "</td>";
-        html += "  <td>" + (job.companyName || "—") + "</td>";
-        html += "  <td>" + (job.location || "—") + "</td>";
+        html += "  <td><strong>" + (i + 1) + "</strong></td>";
+        html += "  <td><strong>" + escapeHtml(job.title || "—") + "</strong></td>";
+        html += "  <td>" + escapeHtml(job.companyName || "—") + "</td>";
+        html += "  <td><i class=\"bi bi-geo-alt text-muted me-1\"></i>" + escapeHtml(job.location || "—") + "</td>";
         html += "  <td>" + (job.jobType ? jobTypeBadge(job.jobType) : "—") + "</td>";
         html += "  <td>" + statusBadge(app.status) + "</td>";
-        html += "  <td>" + formatDate(app.appliedAt || app.createdAt) + "</td>";
+        html += "  <td class=\"text-muted\">" + formatDate(app.appliedAt || app.createdAt) + "</td>";
         html += "</tr>";
       });
 
       html += "</tbody></table></div>";
 
-      $("#apps-table-wrapper").html(html).hide().fadeIn(600);
+      $("#apps-table-wrapper").html(html).hide().fadeIn(500);
     },
     error: function () {
       $("#apps-spinner").hide();
-      $("#apps-table-wrapper").html('<p class="text-danger">Failed to load applications.</p>').show();
+      $("#apps-table-wrapper").html('<div class="alert alert-danger">Failed to load applications.</div>').show();
     },
   });
 }

@@ -13,45 +13,54 @@
   <div id="navbar-container"></div>
 
   <!-- Dashboard Header -->
-  <div class="dashboard-header">
+  <section class="dashboard-header">
     <div class="container">
-      <h2><i class="bi bi-mortarboard me-2"></i>Welcome, <span id="student-name"></span></h2>
-      <p class="mb-0">Track your job applications</p>
+      <h2><i class="bi bi-mortarboard-fill me-2"></i>Welcome, <span id="student-name"></span></h2>
+      <p>Track and manage all your job applications in one place.</p>
     </div>
-  </div>
+  </section>
 
-  <main>
+  <main class="py-4">
     <div class="container">
       <!-- Stats Row -->
-      <div class="row g-3 mb-4">
+      <div class="row g-4 mb-5">
         <div class="col-md-4">
-          <div class="stat-card">
-            <p class="text-muted mb-1">Total Applied</p>
-            <h3 id="stat-total">0</h3>
+          <div class="stat-card animate-fade-in-up">
+            <div class="stat-icon icon-blue"><i class="bi bi-send-fill"></i></div>
+            <div>
+              <h3 id="stat-total">0</h3>
+              <p>Total Applied</p>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="stat-card">
-            <p class="text-muted mb-1">Shortlisted</p>
-            <h3 id="stat-shortlisted" class="text-success">0</h3>
+          <div class="stat-card animate-fade-in-up delay-1">
+            <div class="stat-icon icon-green"><i class="bi bi-star-fill"></i></div>
+            <div>
+              <h3 id="stat-shortlisted">0</h3>
+              <p>Shortlisted</p>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="stat-card">
-            <p class="text-muted mb-1">Hired</p>
-            <h3 id="stat-hired" style="color: #6f42c1;">0</h3>
+          <div class="stat-card animate-fade-in-up delay-2">
+            <div class="stat-icon icon-purple"><i class="bi bi-trophy-fill"></i></div>
+            <div>
+              <h3 id="stat-hired">0</h3>
+              <p>Hired</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Loading Spinner -->
+      <h4 class="mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Application History</h4>
+
       <div id="apps-spinner" class="spinner-wrapper">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
 
-      <!-- Applications Table -->
       <div id="apps-table-wrapper"></div>
     </div>
   </main>

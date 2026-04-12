@@ -11,6 +11,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
+const profileRoutes = require("./routes/profileRoutes");
 
 const app = express();
 
@@ -51,12 +52,14 @@ app.use(
 // Same origin = no CORS/cookie issues
 app.use(express.static(path.join(__dirname, "../../client-static")));
 app.use("/angular", express.static(path.join(__dirname, "../../client-angular")));
+app.use("/uploads", express.static(path.join(__dirname, "../../server/uploads")));
 
 // ── Routes ────────────────────────────────────────────────────
 
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api/profile", profileRoutes);
 
 // ── 404 handler ──────────────────────────────────────────────
 // API routes → return JSON error

@@ -1,14 +1,53 @@
-import { useState, useEffect } from "react";
+/* ── StudentDashboard — animated stat tiles + modern table ──── */
+
+import { useState, useEffect, useRef } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { appAPI } from "../services/api";
 import useAuth from "../hooks/useAuth";
 
-const typeColors = { internship: "bg-info", "full-time": "bg-success", "part-time": "bg-warning" };
-const statusColors = { Applied: "status-applied", Shortlisted: "status-shortlisted", Rejected: "status-rejected", Hired: "status-hired" };
-
 function formatDate(d) {
   if (!d) return "N/A";
-  return new Date(d).toLocaleDateString("en-IN", { year: "numeric", month: "short", day: "numeric" });
+  return new Date(d).toLocaleDateString("en-IN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function JobTypeBadge({ type }) {
+  if (!type) return <span>—</span>;
+  const map = {
+    internship: { cls: "badge-internship", label: "Internship" },
+    "full-time": { cls: "badge-fulltime", label: "Full-time" },
+    "part-time": { cls: "badge-parttime", label: "Part-time" },
+  };
+  const info = map[type] || { cls: "badge-secondary", label: type };
+  return <span className={"badge " + info.cls}>{info.label}</span>;
+}
+
+function StatusBadge({ status }) {
+  return <span className={"badge status-" + (status || "").toLowerCase()}>{status}</span>;
+}
+
+/** Animated counter — ramps from 0 to target over ~800ms */
+function AnimatedCount({ target }) {
+  const [value, setValue] = useState(0);
+  const frame = useRef(null);
+
+  useEffect(() => {
+    const start = performance.now();
+    const duration = 800;
+    const tick = (now) => {
+      const elapsed = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - elapsed, 3);
+      setValue(Math.round(eased * target));
+      if (elapsed < 1) frame.current = requestAnimationFrame(tick);
+    };
+    frame.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame.current);
+  }, [target]);
+
+  return <>{value}</>;
 }
 
 export default function StudentDashboard() {
@@ -18,7 +57,8 @@ export default function StudentDashboard() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    appAPI.getMyApplications()
+    appAPI
+      .getMyApplications()
       .then((data) => setApps(data.applications))
       .catch(() => setError("Failed to load applications."))
       .finally(() => setLoading(false));
@@ -33,55 +73,100 @@ export default function StudentDashboard() {
 
   return (
     <>
-      <div className="dashboard-header">
+      <section className="dashboard-header">
         <div className="container">
-          <h2><i className="bi bi-mortarboard me-2"></i>Welcome, {user.name}</h2>
-          <p className="mb-0">Track your job applications</p>
-        </div>
-      </div>
-
-      <div className="container">
-        {/* Stats */}
-        <div className="row g-3 mb-4">
-          <div className="col-md-4"><div className="stat-card"><p className="text-muted mb-1">Total Applied</p><h3>{total}</h3></div></div>
-          <div className="col-md-4"><div className="stat-card"><p className="text-muted mb-1">Shortlisted</p><h3 className="text-success">{shortlisted}</h3></div></div>
-          <div className="col-md-4"><div className="stat-card"><p className="text-muted mb-1">Hired</p><h3 style={{ color: "#6f42c1" }}>{hired}</h3></div></div>
-        </div>
-
-        {loading && <div className="spinner-wrapper"><div className="spinner-border text-primary"></div></div>}
-        {error && <div className="alert alert-danger">{error}</div>}
-
-        {!loading && apps.length === 0 && !error && (
-          <div className="empty-state">
-            <i className="bi bi-inbox d-block" style={{ fontSize: "3rem" }}></i>
-            <p>You haven't applied to any jobs yet.</p>
-            <Link to="/" className="btn btn-primary">Browse Jobs</Link>
+          <div>
+            <h2><i className="bi bi-mortarboard-fill me-2"></i>Welcome, {user.name}</h2>
+            <p>Track your job applications and their current status.</p>
           </div>
-        )}
+        </div>
+      </section>
 
-        {apps.length > 0 && (
-          <div className="table-responsive">
-            <table className="table table-hover align-middle">
-              <thead className="table-dark">
-                <tr><th>#</th><th>Job Title</th><th>Company</th><th>Location</th><th>Type</th><th>Status</th><th>Applied On</th></tr>
-              </thead>
-              <tbody>
-                {apps.map((app, i) => (
-                  <tr key={app._id}>
-                    <td>{i + 1}</td>
-                    <td>{app.jobId?.title || "—"}</td>
-                    <td>{app.jobId?.companyName || "—"}</td>
-                    <td>{app.jobId?.location || "—"}</td>
-                    <td>{app.jobId?.jobType ? <span className={"badge " + (typeColors[app.jobId.jobType] || "bg-secondary")}>{app.jobId.jobType}</span> : "—"}</td>
-                    <td><span className={"badge " + (statusColors[app.status] || "")}>{app.status}</span></td>
-                    <td>{formatDate(app.appliedAt || app.createdAt)}</td>
+      <main className="py-4">
+        <div className="container">
+          {/* Stats Row */}
+          <div className="row g-4 mb-5">
+            <div className="col-md-4">
+              <div className="stat-card animate-fade-in-up">
+                <div className="stat-icon icon-blue"><i className="bi bi-file-earmark-text-fill"></i></div>
+                <div>
+                  <h3><AnimatedCount target={total} /></h3>
+                  <p>Total Applied</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="stat-card animate-fade-in-up delay-1">
+                <div className="stat-icon icon-green"><i className="bi bi-star-fill"></i></div>
+                <div>
+                  <h3><AnimatedCount target={shortlisted} /></h3>
+                  <p>Shortlisted</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="stat-card animate-fade-in-up delay-2">
+                <div className="stat-icon icon-purple"><i className="bi bi-check-circle-fill"></i></div>
+                <div>
+                  <h3><AnimatedCount target={hired} /></h3>
+                  <p>Hired</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h4 className="mb-3"><i className="bi bi-clock-history me-2 text-primary"></i>Your Applications</h4>
+
+          {loading && (
+            <div className="spinner-wrapper">
+              <div className="spinner-border text-primary"></div>
+            </div>
+          )}
+          {error && <div className="alert alert-danger">{error}</div>}
+
+          {!loading && apps.length === 0 && !error && (
+            <div className="empty-state">
+              <i className="bi bi-inbox"></i>
+              <p>You haven't applied to any jobs yet. Start exploring!</p>
+              <Link to="/jobs" className="btn btn-primary">Browse Jobs</Link>
+            </div>
+          )}
+
+          {apps.length > 0 && (
+            <div className="table-responsive">
+              <table className="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Location</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Applied On</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+                </thead>
+                <tbody>
+                  {apps.map((app, i) => {
+                    const job = app.jobId || {};
+                    return (
+                      <tr key={app._id}>
+                        <td><strong>{i + 1}</strong></td>
+                        <td><strong>{job.title || "—"}</strong></td>
+                        <td>{job.companyName || "—"}</td>
+                        <td><i className="bi bi-geo-alt text-muted me-1"></i>{job.location || "—"}</td>
+                        <td><JobTypeBadge type={job.jobType} /></td>
+                        <td><StatusBadge status={app.status} /></td>
+                        <td className="text-muted">{formatDate(app.appliedAt || app.createdAt)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </main>
     </>
   );
 }

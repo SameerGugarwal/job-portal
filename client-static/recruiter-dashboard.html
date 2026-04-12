@@ -13,49 +13,69 @@
   <div id="navbar-container"></div>
 
   <!-- Dashboard Header -->
-  <div class="dashboard-header">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+  <section class="dashboard-header">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
       <div>
-        <h2><i class="bi bi-briefcase me-2"></i>Welcome, <span id="recruiter-name"></span></h2>
-        <p class="mb-0">Manage your job postings and applicants</p>
+        <h2><i class="bi bi-briefcase-fill me-2"></i>Welcome, <span id="recruiter-name"></span></h2>
+        <p>Post openings, view applicants, and manage your hiring pipeline.</p>
       </div>
-      <button class="btn btn-light mt-2 mt-md-0" data-bs-toggle="modal" data-bs-target="#postJobModal">
-        <i class="bi bi-plus-circle me-1"></i>Post New Job
+      <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#postJobModal">
+        <i class="bi bi-plus-circle-fill"></i> Post New Job
       </button>
     </div>
-  </div>
+  </section>
 
-  <main>
+  <main class="py-4">
     <div class="container">
-      <!-- Stats -->
-      <div class="row g-3 mb-4">
+      <!-- Stats Row -->
+      <div class="row g-4 mb-5">
         <div class="col-md-4">
-          <div class="stat-card">
-            <p class="text-muted mb-1">Jobs Posted</p>
-            <h3 id="stat-posted">0</h3>
+          <div class="stat-card animate-fade-in-up">
+            <div class="stat-icon icon-blue"><i class="bi bi-briefcase-fill"></i></div>
+            <div>
+              <h3 id="stat-posted">0</h3>
+              <p>Jobs Posted</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card animate-fade-in-up delay-1">
+            <div class="stat-icon icon-green"><i class="bi bi-people-fill"></i></div>
+            <div>
+              <h3 id="stat-applicants">0</h3>
+              <p>Total Applicants</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="stat-card animate-fade-in-up delay-2">
+            <div class="stat-icon icon-purple"><i class="bi bi-check-circle-fill"></i></div>
+            <div>
+              <h3 id="stat-hired-count">0</h3>
+              <p>Hired</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Loading Spinner -->
+      <h4 class="mb-3"><i class="bi bi-clipboard-data me-2 text-primary"></i>Your Job Postings</h4>
+
       <div id="jobs-spinner" class="spinner-wrapper">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
 
-      <!-- My Jobs List -->
-      <h4 class="mb-3">Your Job Postings</h4>
       <div id="my-jobs-list"></div>
     </div>
   </main>
 
   <!-- Post Job Modal -->
   <div class="modal fade" id="postJobModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Post a New Job</h5>
+          <h5 class="modal-title"><i class="bi bi-plus-circle-fill me-2 text-primary"></i>Post a New Job</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -75,7 +95,7 @@
               </div>
               <div class="col-12">
                 <label for="job-description" class="form-label">Description *</label>
-                <textarea class="form-control" id="job-description" rows="3" placeholder="Describe the role, responsibilities, and requirements..." required></textarea>
+                <textarea class="form-control" id="job-description" rows="4" placeholder="Describe the role, responsibilities, and requirements..." required></textarea>
               </div>
               <div class="col-md-6">
                 <label for="job-skills" class="form-label">Skills (comma-separated)</label>
@@ -87,21 +107,22 @@
               </div>
               <div class="col-md-4">
                 <label for="job-salary" class="form-label">Stipend / Salary</label>
-                <input type="text" class="form-control" id="job-salary" placeholder="e.g. 15,000/month" />
+                <input type="text" class="form-control" id="job-salary" placeholder="15,000/month" />
               </div>
               <div class="col-md-4">
                 <label for="job-category" class="form-label">Category</label>
-                <input type="text" class="form-control" id="job-category" placeholder="e.g. Engineering" />
+                <input type="text" class="form-control" id="job-category" placeholder="Engineering" />
               </div>
               <div class="col-md-4">
-                <label for="job-deadline" class="form-label">Application Deadline</label>
+                <label for="job-deadline" class="form-label">Deadline</label>
                 <input type="date" class="form-control" id="job-deadline" />
               </div>
             </div>
-            <div class="mt-4">
+            <div class="mt-4 d-flex gap-2">
               <button type="submit" class="btn btn-primary" id="post-job-btn">
-                <i class="bi bi-send me-1"></i>Post Job
+                <i class="bi bi-send-fill"></i> Post Job
               </button>
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </form>
         </div>
@@ -111,15 +132,13 @@
 
   <!-- Applicants Modal -->
   <div class="modal fade" id="applicantsModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="applicants-title">Applicants</h5>
+          <h5 class="modal-title" id="applicants-title"><i class="bi bi-people-fill me-2 text-primary"></i>Applicants</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body" id="applicants-body">
-          <!-- Filled by JS -->
-        </div>
+        <div class="modal-body" id="applicants-body"></div>
       </div>
     </div>
   </div>
